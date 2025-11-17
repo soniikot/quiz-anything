@@ -10,23 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TakeQuizRouteImport } from './routes/take-quiz'
-import { Route as ReviewQuizRouteImport } from './routes/review-quiz'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthedReviewQuizRouteImport } from './routes/_authed/review-quiz'
+import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 
 const TakeQuizRoute = TakeQuizRouteImport.update({
   id: '/take-quiz',
   path: '/take-quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReviewQuizRoute = ReviewQuizRouteImport.update({
-  id: '/review-quiz',
-  path: '/review-quiz',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthedRoute = AuthedRouteImport.update({
+  id: '/_authed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,38 +29,54 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedReviewQuizRoute = AuthedReviewQuizRouteImport.update({
+  id: '/review-quiz',
+  path: '/review-quiz',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/review-quiz': typeof ReviewQuizRoute
   '/take-quiz': typeof TakeQuizRoute
+  '/dashboard': typeof AuthedDashboardRoute
+  '/review-quiz': typeof AuthedReviewQuizRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/review-quiz': typeof ReviewQuizRoute
   '/take-quiz': typeof TakeQuizRoute
+  '/dashboard': typeof AuthedDashboardRoute
+  '/review-quiz': typeof AuthedReviewQuizRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/review-quiz': typeof ReviewQuizRoute
+  '/_authed': typeof AuthedRouteWithChildren
   '/take-quiz': typeof TakeQuizRoute
+  '/_authed/dashboard': typeof AuthedDashboardRoute
+  '/_authed/review-quiz': typeof AuthedReviewQuizRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/review-quiz' | '/take-quiz'
+  fullPaths: '/' | '/take-quiz' | '/dashboard' | '/review-quiz'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/review-quiz' | '/take-quiz'
-  id: '__root__' | '/' | '/dashboard' | '/review-quiz' | '/take-quiz'
+  to: '/' | '/take-quiz' | '/dashboard' | '/review-quiz'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authed'
+    | '/take-quiz'
+    | '/_authed/dashboard'
+    | '/_authed/review-quiz'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
-  ReviewQuizRoute: typeof ReviewQuizRoute
+  AuthedRoute: typeof AuthedRouteWithChildren
   TakeQuizRoute: typeof TakeQuizRoute
 }
 
@@ -78,18 +89,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TakeQuizRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/review-quiz': {
-      id: '/review-quiz'
-      path: '/review-quiz'
-      fullPath: '/review-quiz'
-      preLoaderRoute: typeof ReviewQuizRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/_authed': {
+      id: '/_authed'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -99,13 +103,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/review-quiz': {
+      id: '/_authed/review-quiz'
+      path: '/review-quiz'
+      fullPath: '/review-quiz'
+      preLoaderRoute: typeof AuthedReviewQuizRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/dashboard': {
+      id: '/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthedDashboardRouteImport
+      parentRoute: typeof AuthedRoute
+    }
   }
 }
 
+interface AuthedRouteChildren {
+  AuthedDashboardRoute: typeof AuthedDashboardRoute
+  AuthedReviewQuizRoute: typeof AuthedReviewQuizRoute
+}
+
+const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedDashboardRoute: AuthedDashboardRoute,
+  AuthedReviewQuizRoute: AuthedReviewQuizRoute,
+}
+
+const AuthedRouteWithChildren =
+  AuthedRoute._addFileChildren(AuthedRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  ReviewQuizRoute: ReviewQuizRoute,
+  AuthedRoute: AuthedRouteWithChildren,
   TakeQuizRoute: TakeQuizRoute,
 }
 export const routeTree = rootRouteImport

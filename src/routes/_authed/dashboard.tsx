@@ -12,7 +12,7 @@ import StatsGrid from '@/components/dashboard/StatsGrid'
 import ReviewCTA from '@/components/dashboard/ReviewCTA'
 import RecentQuizzes from '@/components/dashboard/RecentQuizzes'
 
-export const Route = createFileRoute('/dashboard')({
+export const Route = createFileRoute('/_authed/dashboard')({
   component: Dashboard,
 })
 

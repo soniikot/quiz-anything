@@ -8,7 +8,7 @@ import type { Quiz } from '@/api/quiz'
 import QuizDisplay from '@/components/quiz/QuizDisplay'
 import QuizResults from '@/components/quiz/QuizResults'
 
-export const Route = createFileRoute('/review-quiz')({
+export const Route = createFileRoute('/_authed/review-quiz')({
   component: ReviewQuiz,
 })
 
