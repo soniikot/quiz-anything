@@ -8,6 +8,8 @@ import {
   Scripts,
   createRootRoute,
 } from '@tanstack/react-router'
+import Header from '@/components/Header'
+import '../styles.css'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -16,6 +18,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
+      <Header />
       <Outlet />
     </RootDocument>
   )
@@ -28,7 +31,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <head>
           <HeadContent />
         </head>
-        <body>
+        <body className="bg-slate-900">
           {children}
           <TanStackRouterDevtools position="bottom-right" />
           <Scripts />
